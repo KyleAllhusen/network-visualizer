@@ -76,11 +76,19 @@ nx.draw(G,
         font_color="White",
         node_color="Navy")
 
+label_heights_str = args.heights[0]
+
+label_heights = list(map(int, label_heights_str))
+print(type(label_heights[0]))
+
+num = 0
 for point in pos:
-    x, y = pos[point]
-    text = "[" + str(x) + "," + str(y) + "]"
-    plt.text(x, y+0.25, s=text, fontsize="small", color="red",
-             horizontalalignment='center')
+    if num in label_heights:
+        x, y = pos[point]
+        text = "[" + str(x) + "," + str(y) + "]"
+        plt.text(x, y+0.25, s=text, fontsize="small", color="red",
+                horizontalalignment='center')
+    num+=1
 
 edge_labels = nx.get_edge_attributes(G, 'k')
 # nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')

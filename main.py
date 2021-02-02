@@ -1,5 +1,5 @@
 import json
-import sys
+from parsecl import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
@@ -10,9 +10,11 @@ def check_key(key):
         print("FILE INVALID. no {0}. Enter a valid json file.".format(key))
         exit(0)
 
+# parse command line
+args = parsecl()
 
 # get file from command line arg
-file = sys.argv[1]
+file = args.file
 
 # Initialize Graph
 G = nx.Graph()
@@ -79,7 +81,6 @@ for point in pos:
     text = "[" + str(x) + "," + str(y) + "]"
     plt.text(x, y+0.25, s=text, fontsize="small", color="red",
              horizontalalignment='center')
-
 
 edge_labels = nx.get_edge_attributes(G, 'k')
 # nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')

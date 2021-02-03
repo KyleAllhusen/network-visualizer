@@ -1,3 +1,5 @@
+#functions which will be included inside of main.py
+
 import matplotlib.pyplot as plt
 
 

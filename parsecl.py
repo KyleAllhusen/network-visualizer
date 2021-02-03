@@ -1,3 +1,5 @@
+# parser for the command line arguments
+
 import argparse
 
 def parsecl():

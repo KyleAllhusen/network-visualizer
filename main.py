@@ -1,14 +1,9 @@
 import json
-from parsecl import *
 import networkx as nx
 import matplotlib.pyplot as plt
 
-
-# make sure key exists in json file.
-def check_key(key):
-    if key not in data_file:
-        print("FILE INVALID. no {0}. Enter a valid json file.".format(key))
-        exit(0)
+from parsecl import *
+from functions import *
 
 # parse command line
 args = parsecl()
@@ -20,51 +15,38 @@ file = args.file
 G = nx.Graph()
 
 # Lists where values are stored from JSON
-edges = []
-heights = []
 nodes = []
-locations = []
 
 with open(file, "r") as json_file:
-    assert file.endswith(".json")
 
+    assert file.endswith(".json")
     data_file = json.load(json_file)
 
-    check_key("connections")
+    check_key("connections", data_file)
+    edges = add_edges(data_file)
 
-    numEdges = len(data_file['connections'])
-    for i in range(0, numEdges):
-        edges.append(data_file['connections'][i]['nodes'])
+    check_key("heightsByEvent", data_file)
+    heights = add_heights(data_file)
 
-    check_key("heightsByEvent")
-
+    # assuming nodes are named 1, 2, 3 . . . name each node
     numHeights = len(data_file['heightsByEvent']['0'])
-    if numHeights <= 0:
-        print("File has no heights.")
-        exit(0)
-
-    for i in range(0, numHeights):
-        idx = str(i)
-        heights.append(data_file['heightsByEvent']['0'][idx])
-
     for name in range(0, numHeights):
         nodes.append(name)
 
     # Create the locations where nodes will be placed.
-    x = 0
-    for i in range(0, numHeights):
-        tup = (x, heights[i])
-        locations.append(tup)
-        if x < numHeights:
-            x = x + 1.0
-        else:
-            x = 0
+    locations = make_coordinates(data_file, heights)
+
+json_file.close()
+
+G.add_edges_from(edges)
+
+label_heights_str = args.heights[0]
+label_heights = list(map(int, label_heights_str))
+
+color_map = make_node_color_map(G, label_heights)
 
 # dictionary of node positions
 pos = dict(zip(nodes, locations))
-
-G.add_edges_from(edges, k=6)
-
 fig, ax = plt.subplots()
 
 nx.draw(G,
@@ -73,22 +55,11 @@ nx.draw(G,
         with_labels=True,
         node_size=150,
         font_size=10,
+        edge_color="Black",
         font_color="White",
-        node_color="Navy")
+        node_color=color_map)
 
-label_heights_str = args.heights[0]
-
-label_heights = list(map(int, label_heights_str))
-print(type(label_heights[0]))
-
-num = 0
-for point in pos:
-    if num in label_heights:
-        x, y = pos[point]
-        text = "[" + str(x) + "," + str(y) + "]"
-        plt.text(x, y+0.25, s=text, fontsize="small", color="red",
-                horizontalalignment='center')
-    num+=1
+labelH(pos, label_heights)
 
 edge_labels = nx.get_edge_attributes(G, 'k')
 # nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')

@@ -1,5 +1,6 @@
 import json
 import networkx as nx
+import numpy as np
 import matplotlib.pyplot as plt
 
 from parsecl import *
@@ -38,7 +39,26 @@ with open(file, "r") as json_file:
 
 json_file.close()
 
-G.add_edges_from(edges)
+label_edges_str = args.kvals
+label_edges = list(map(int, label_edges_str))
+color_red = []
+for i in range(0, len(edges)):
+    for j in range(0, len(label_edges), 2):
+        arr = []
+        arr.append(label_edges[j])
+        arr.append(label_edges[j+1])
+        if arr[0] == edges[i][0] and arr[1] == edges[i][1]:
+            color_red.append(edges[i])
+        else:
+            G.add_edge(edges[i][0], edges[i][1], color="black")
+
+for i in range(0, len(color_red)):
+    G.add_edge(color_red[i][0], color_red[i][1], color="red")
+
+colors = nx.get_edge_attributes(G, 'color').values()
+weights = nx.get_edge_attributes(G, 'weight').values()
+
+# G.add_edges_from(edges)
 
 label_heights_str = args.heights[0]
 label_heights = list(map(int, label_heights_str))
@@ -55,14 +75,14 @@ nx.draw(G,
         with_labels=True,
         node_size=150,
         font_size=10,
-        edge_color="Black",
+        edge_color=colors,
         font_color="White",
         node_color=color_map)
 
 labelH(pos, label_heights)
 
 edge_labels = nx.get_edge_attributes(G, 'k')
-# nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')
+nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')
 
 
 limits = plt.axis('on')

@@ -8,6 +8,7 @@ from functions import *
 
 # parse command line
 args = parsecl()
+print(args)
 
 # get file from command line arg
 file = args.file
@@ -24,7 +25,8 @@ with open(file, "r") as json_file:
     data_file = json.load(json_file)
 
     check_key("connections", data_file)
-    edges = add_edges(data_file)
+    edges, kvals = add_edges(data_file)
+
 
     check_key("heightsByEvent", data_file)
     heights = add_heights(data_file)
@@ -34,59 +36,87 @@ with open(file, "r") as json_file:
     for name in range(0, numHeights):
         nodes.append(name)
 
+    check_input(args, numHeights)
+
     # Create the locations where nodes will be placed.
     locations = make_coordinates(data_file, heights)
 
 json_file.close()
 
-label_edges_str = args.kvals
-label_edges = list(map(int, label_edges_str))
-color_red = []
-for i in range(0, len(edges)):
-    for j in range(0, len(label_edges), 2):
-        arr = []
-        arr.append(label_edges[j])
-        arr.append(label_edges[j+1])
-        if arr[0] == edges[i][0] and arr[1] == edges[i][1]:
-            color_red.append(edges[i])
-        else:
-            G.add_edge(edges[i][0], edges[i][1], color="black")
+if args.heights != None and args.kvals != None:
+    label_edges_str = args.kvals
+    label_edges = list(map(int, label_edges_str))
 
-for i in range(0, len(color_red)):
-    G.add_edge(color_red[i][0], color_red[i][1], color="red")
+    color_red = []
 
-colors = nx.get_edge_attributes(G, 'color').values()
-weights = nx.get_edge_attributes(G, 'weight').values()
+    # decide which edges should be colored and labeled
+    for i in range(0, len(edges)):
+        for j in range(0, len(label_edges), 2):
+            arr = []
+            arr.append(label_edges[j])
+            arr.append(label_edges[j+1])
+            if arr[0] == edges[i][0] and arr[1] == edges[i][1]:
+                color_red.append(edges[i])
+                color_red.append(kvals[i])
+            if arr[1] == edges[i][0] and arr[0] == edges[i][1]:
+                color_red.append(edges[i])
+                color_red.append(kvals[i])
+            else:
+                G.add_edge(edges[i][0], edges[i][1], color="black")
 
-# G.add_edges_from(edges)
+    for i in range(0, len(color_red), 2):
+        G.add_edge(color_red[i][0], color_red[i][1], color="red", weight=color_red[i+1])
 
-label_heights_str = args.heights[0]
-label_heights = list(map(int, label_heights_str))
+    colors = nx.get_edge_attributes(G, 'color').values()
+    weights = nx.get_edge_attributes(G, 'weight').values()
 
-color_map = make_node_color_map(G, label_heights)
+    label_heights_str = args.heights[0]
+    label_heights = list(map(int, label_heights_str))
 
-# dictionary of node positions
-pos = dict(zip(nodes, locations))
-fig, ax = plt.subplots()
+    color_map = make_node_color_map(G, label_heights)
 
-nx.draw(G,
-        pos=pos,
-        ax=ax,
-        with_labels=True,
-        node_size=150,
-        font_size=10,
-        edge_color=colors,
-        font_color="White",
-        node_color=color_map)
+    #dictionary of node positions
+    pos = dict(zip(nodes, locations))
+    fig, ax = plt.subplots()
 
-labelH(pos, label_heights)
+    nx.draw(G,
+            pos=pos,
+            ax=ax,
+            with_labels=True,
+            node_size=150,
+            font_size=10,
+            edge_color=colors,
+            font_color="White",
+            node_color=color_map)
 
-edge_labels = nx.get_edge_attributes(G, 'k')
-nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')
+    # label heights
+    labelH(pos, label_heights)
 
+    edge_labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw_networkx_edge_labels(G, pos=pos, edge_labels=edge_labels, font_size=8, font_color='red')
 
-limits = plt.axis('on')
-ax.tick_params(left=True, labelleft=True)
-ax.grid()
+    limits = plt.axis('on')
+    ax.tick_params(left=True, labelleft=True)
+    ax.grid()
 
-plt.show()
+    plt.show()
+else:
+    G.add_edges_from(edges)
+    pos = dict(zip(nodes, locations))
+    fig, ax = plt.subplots()
+
+    nx.draw(G,
+            pos=pos,
+            ax=ax,
+            with_labels=True,
+            node_size=150,
+            font_size=10,
+            edge_color="Black",
+            font_color="White",
+            node_color="Navy")
+
+    limits = plt.axis('on')
+    ax.tick_params(left=True, labelleft=True)
+    ax.grid()
+
+    plt.show()

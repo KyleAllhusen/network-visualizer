@@ -52,6 +52,23 @@ def make_coordinates(file, heights):
             x = 0
     return locations
 
+def color_edges(G, edges, color_edges, kvals):
+    color_red = []
+    for i in range(0, len(edges)):
+        for j in range(0, len(color_edges), 2):
+            arr = []
+            arr.append(color_edges[j])
+            arr.append(color_edges[j+1])
+            if arr[0] == edges[i][0] and arr[1] == edges[i][1]:
+                color_red.append(edges[i])
+                color_red.append(kvals[i])
+            if arr[1] == edges[i][0] and arr[0] == edges[i][1]:
+                color_red.append(edges[i])
+                color_red.append(kvals[i])
+            else:
+                G.add_edge(edges[i][0], edges[i][1], color="black")
+    return color_red
+
 
 def make_node_color_map(G, array):
     color_map = []

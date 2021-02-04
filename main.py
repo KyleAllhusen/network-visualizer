@@ -49,23 +49,9 @@ if args.heights != None and args.kvals != None:
     label_edges_str = args.kvals
     label_edges = list(map(int, label_edges_str))
 
-    color_red = []
+    color_red = color_edges(G, edges, label_edges, kvals)
 
-    # decide which edges should be colored and labeled
-    for i in range(0, len(edges)):
-        for j in range(0, len(label_edges), 2):
-            arr = []
-            arr.append(label_edges[j])
-            arr.append(label_edges[j+1])
-            if arr[0] == edges[i][0] and arr[1] == edges[i][1]:
-                color_red.append(edges[i])
-                color_red.append(kvals[i])
-            if arr[1] == edges[i][0] and arr[0] == edges[i][1]:
-                color_red.append(edges[i])
-                color_red.append(kvals[i])
-            else:
-                G.add_edge(edges[i][0], edges[i][1], color="black")
-
+    #color edges red
     for i in range(0, len(color_red), 2):
         G.add_edge(color_red[i][0], color_red[i][1], color="red", weight=color_red[i+1])
 

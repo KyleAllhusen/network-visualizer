@@ -88,6 +88,8 @@ if args.heights != None and args.kvals != None:
     ax.grid()
 
     plt.show()
+
+# if no additional CL args(heights, kvals) are given
 else:
     G.add_edges_from(edges)
     pos = dict(zip(nodes, locations))

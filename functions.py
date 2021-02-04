@@ -1,4 +1,4 @@
-#functions which will be included inside of main.py
+# functions which will be included inside of main.py
 
 import matplotlib.pyplot as plt
 
@@ -11,7 +11,6 @@ def check_input(args, heights):
             if user_heights[i] > heights:
                 print("Input node " + str(user_heights[i]) + " does not exist.")
                 exit(1)
-
 
 
 def check_key(key, data_file):

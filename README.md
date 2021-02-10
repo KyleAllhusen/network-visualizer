@@ -3,9 +3,9 @@ Small python program to read network data from a JSON file, and generates a netw
 
 **make sure the required dependencies are installed(requirements.txt)**
 
-# H1 Example Use: 
+# Example Use: 
 
-Display heights for nodes 6 and 8, label edge 1->5 and edge 3->8 with its k-value and highlights it
+## Display heights for nodes 6 and 8, label edge 1->5 and edge 3->8 with its k-value and highlights it
 
 
 **./some_path/test.json -heights 6 8 -kvals 1 5 3 8**

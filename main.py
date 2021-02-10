@@ -9,7 +9,7 @@ from parsecl import *
 from functions import *
 
 # parse command line
-args = parsecl()
+args = parse_command_line()
 print(args)
 
 # get file from command line arg

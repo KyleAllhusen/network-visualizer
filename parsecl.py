@@ -2,7 +2,7 @@
 
 import argparse
 
-def parsecl():
+def parse_command_line():
     parser = argparse.ArgumentParser(description='Get input')
     parser.add_argument('file', help="JSON file to parse data")
     parser.add_argument('-heights', help="Nodes where you wish to display the height of a given node.", action='append',

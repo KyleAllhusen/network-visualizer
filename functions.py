@@ -3,16 +3,6 @@
 import matplotlib.pyplot as plt
 
 
-def check_input(args, heights):
-    if args.heights != None or args.kvals != None:
-        heights_str = args.heights[0]
-        user_heights = list(map(int, heights_str))
-        for i in range(0, len(user_heights)):
-            if user_heights[i] > heights:
-                print("Input node " + str(user_heights[i]) + " does not exist.")
-                exit(1)
-
-
 def check_key(key, data_file):
     if key not in data_file:
         print("FILE INVALID. no {0}. Enter a valid json file.".format(key))

@@ -43,7 +43,7 @@ def run_program(file, select_heights, select_edges):
 
     json_file.close()
 
-    if select_heights != None and select_edges != None:
+    if select_heights != "" and select_edges != "":
         label_edges = list(map(int, select_edges.split(" ")))
 
         color_red = color_edges(G, edges, label_edges, kvals)
